@@ -1,0 +1,14 @@
+1) Scenario 
+    User Decrypts the passwords
+    Makes changes to the passwords
+    Chooses to decrypt again -> by this the new changed passwords can be resetted
+
+    Possible solution
+        Add a variable to check whether the passwords are decrypted or not
+        and ignore/prevent the user from doing it again.
+
+2) Remove the ? before the password file by customizing the custom_input_2 in userInput.py
+and removing the question wala some property from the object
+
+3) You have to remove pycrypto and pycryptodome and then install pycryptodome again
+for the code to work. -> make an installation script which is ran once in the beginning
