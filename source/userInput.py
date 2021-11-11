@@ -4,11 +4,11 @@ from PyInquirer import prompt, print_json, style_from_dict, Separator
 from examples import custom_style_1, custom_style_2
 import os
 
-def getKEY()->str:
+def getKEY(msg)->str:
     questions = [
         {
             "type": "password",
-            "message": "Enter KEY:",
+            "message": msg,
             "name": "KEY"
         }
     ]
@@ -17,11 +17,11 @@ def getKEY()->str:
     return KEY
 
 
-def getPassword()->str:
+def getPassword(msg="Enter password:")->str:
     questions = [
         {
             "type": "password",
-            "message": "Enter password:",
+            "message": msg,
             "name": "password"
         }
     ]

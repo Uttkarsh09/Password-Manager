@@ -154,9 +154,9 @@ def discardChanges():
 		print("\nNEW PASSWORDS DISCARDED")
 
 
-def askUserForKey():
+def askUserForKey(msg="Enter KEY:"):
 	global KEY
-	KEY = getKEY()
+	KEY = getKEY(msg)
 
 
 def accountExists(account, showInfoMsg=False)->bool:
@@ -197,7 +197,7 @@ def renameAccount():
 def changePassword():
 	account = chooseAccount("Enter the account name you want to change")
 	if account:
-		newPassword = getPassword()
+		newPassword = getPassword("Enter new password:")
 		pswds.addPassword(account, newPassword)
 		print(f"\nPassword for {account} changed successfully!")
 
@@ -207,7 +207,7 @@ def changeKEY():
 	msg = "In order to change the KEY all the changes (if any) will be saved"
 	if confirm(msg):
 		os.remove(fileLocation)
-		askUserForKey()
+		askUserForKey("Enter new KEY:")
 		passwords = pswds.getPasswords()
 		encryptPswdData(passwords)
 		pswdsBackup.setPasswords(passwords.copy())
