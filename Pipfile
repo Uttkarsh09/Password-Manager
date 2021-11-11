@@ -20,4 +20,4 @@ python_version = "3.9"
 [scripts]
 config = "./scripts/install.sh"
 try = "./scripts/try.sh"
-printfoo = "python -c \"print('foo')\""
+start = "python ./source/main.py"

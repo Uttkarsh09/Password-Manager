@@ -1,14 +1,18 @@
 from PyInquirer.utils import print_json
 from simplecrypt import encrypt, decrypt, DecryptionException
-from userInput import chooseFrom, confirm, getKEY, showActionList, getPassword
+from userInput import chooseFrom, confirm, getKEY, showActionList, getPassword, askFileLocation
+from os import path
+import os
 from tabulate import tabulate
 import pswdManager
 import json
-import os
 import animation
+from configuration import getConfig, updateConfig
+import shutil
 
 KEY = ""
-fileLocation = os.path.join(os.path.expanduser("~"), "pswds.bin")
+config = getConfig()
+fileLocation = config["fileLocation"]
 pswdsBackup = pswdManager.PasswordManager()
 pswds = pswdManager.PasswordManager()
 animate = animation.Animate()
@@ -36,10 +40,11 @@ def encryptPswdData(passwords:dict)->bool:
 
 def decryptPswdData()->dict:
 	# print("\nDecrypting...")
-	global pswdsBackup, KEY
+	global fileLocation, pswdsBackup, KEY
 	encryptedPswds = ""
 
 	try:
+		print(f"this is the file location -> {fileLocation}")
 		with open(fileLocation, "rb") as f:
 			encryptedPswds = f.readline()
 		animate.startAnimation("Decrypt")
@@ -144,7 +149,7 @@ def writeChanges():
 
 
 def discardChanges():
-	if confirm("Do you want to continue all the unsaved changes will be lost"):
+	if confirm("Do you want to continue \nAll the unsaved changes will be lost"):
 		pswds.setPasswords(pswdsBackup.getPasswords().copy())
 		print("\nNEW PASSWORDS DISCARDED")
 
@@ -210,7 +215,50 @@ def changeKEY():
 		return False
 		
 
+def moveFile(oldLocation, newLocation):
+	shutil.move(oldLocation, newLocation)
+
+
+def changeFileLocation():
+	global fileLocation
+
+	while True:
+		newFileLocation = askFileLocation(fileLocation)
+		
+		if not newFileLocation:
+			break
+
+		print(f"This is the new file location \n {newFileLocation}")
+		fileExists = path.exists(newFileLocation)
+		directoryExists = path.exists(path.dirname(newFileLocation))
+
+		if path.dirname(fileLocation) == newFileLocation:
+			print("Enter a different location")
+			continue	
+		if not directoryExists:
+			print(f"Directory {newFileLocation} not found")
+			break
+
+		newFileLocation = path.join(newFileLocation, "pswds.bin")
+		print("DOES THE FILE EXISTS")
+		print(path.isfile(newFileLocation))
+		if path.isfile(newFileLocation):
+			if fileExists and (not confirm("Do you want to override the existing file")):
+				break
+
+		moveFile(fileLocation, newFileLocation)
+		updateConfig(newFileLocation)
+		fileLocation = newFileLocation
+		print("\nLocation changed !")
+		break
+
 if __name__ == "__main__":
+	if not fileLocation:
+		defaultLocation = path.join(path.expanduser("~"), "pswds.bin")
+		fileLocation = defaultLocation
+		config["fileLocation"] = defaultLocation
+		updateConfig(defaultLocation)
+	
 	while True:
 		askUserForKey()
 		res = decryptPswdData()
@@ -234,9 +282,10 @@ if __name__ == "__main__":
 		"Discard Changes": discardChanges,
 		"Delete account": deleteAccount,
 		"Rename account": renameAccount,
+		"Change file location": changeFileLocation,
 		"Change existing password": changePassword,
 		"Change KEY": changeKEY,
-		"Exit": endLoop,
+		"EXIT": endLoop
 	}
 
 	while not exit:

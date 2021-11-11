@@ -1,2 +1,5 @@
 __pycache__/
 delete.py
+*.7z
+issues.txt
+Pipfile.lock

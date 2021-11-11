@@ -2,6 +2,7 @@ from __future__ import print_function, unicode_literals
 from pprint import pprint
 from PyInquirer import prompt, print_json, style_from_dict, Separator
 from examples import custom_style_1, custom_style_2
+import os
 
 def getKEY()->str:
     questions = [
@@ -57,6 +58,43 @@ def chooseFrom(choices:list, message:str)->str:
     return choice
 
 
+def askFileLocation(currFileLocation:str):
+    print(f"Current file location: {currFileLocation}")
+    options = ["Enter new password file location", "Use Default", "EXIT"]
+    choice = [
+        {
+            "type": "list",
+            "name": "fileLocationChoice",
+            "message": "Change file location",
+            "choices": options
+        }
+    ]
+    choice = prompt(choice, style=custom_style_2)
+    choice = choice["fileLocationChoice"]
+    
+    if choice == options[2]:
+        return False
+
+    if choice == options[1]:
+        return os.path.expanduser("~")
+
+    if choice == options[0]:
+        questions = [
+            {
+                "type": "input",
+                # This looks ugly as s**t.....i know
+                "message": """Enter new file location 
+    Example:- 
+        /new/file/location/
+:""",
+                "name": "fileLocation"
+            }
+        ]
+        answer = prompt(questions, style=custom_style_2)
+        newFileLocation = answer["fileLocation"]
+        return newFileLocation
+
+
 def showActionList():
     questions = [
         {
@@ -69,10 +107,11 @@ def showActionList():
                 "Change existing password",
                 "Delete account",
                 "Rename account",
+                "Change file location",
                 "Write changes",
                 "Discard Changes",
                 "Change KEY",
-                "Exit",
+                "EXIT",
             ]
         }
     ]
