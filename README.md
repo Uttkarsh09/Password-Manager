@@ -14,7 +14,7 @@ All the passwords are saved in a form of cyphertext, secured by a master passwor
 
 I have used python's [simple-crypt](https://pypi.org/project/simple-crypt/) module for all the encryptions.
 
-## Setup ℹ️
+## Setup ⚙️
 1. Before beginning you should have [pipenv](https://pypi.org/project/pipenv/) installed.
 2. Make sure that ```./scripts/install.sh``` has execution permission.
 3. Open the terminal/console, move to the project directory and execute ```pipenv shell```.
